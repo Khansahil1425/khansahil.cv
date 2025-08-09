@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sahil Nissar Khan — Tech Background CV</title>
+<style>
+  /* Full screen tech background */
+  body, html {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #0a0f21;
+    color: #00d4ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Animated grid lines background */
+  #tech-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    background:
+      linear-gradient(#00314d 1px, transparent 1px),
+      linear-gradient(90deg, #00314d 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Moving neon lines overlay */
+  #neon-lines {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .cv-box {
+    width: 700px;
+    height: 420px;
+    background: rgba(2, 18, 39, 0.9);
+    border-radius: 18px;
+    border: 3px solid #00d4ff;
+    box-shadow: 0 0 40px #00d4ff;
+    padding: 25px 35px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+
+  .lines-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.2s ease;
+    will-change: transform;
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  .line {
+    color: #00d4ff;
+    font-size: 18px;
+    text-align: center;
+    text-shadow: 0 0 12px #00d4ff, 0 0 25px #00d4ff;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    padding: 0 5px;
+  }
+  .line.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .line.hide {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  .final-slide {
+    color: #00d4ff;
+    font-size: 16px;
+    line-height: 1.4;
+    text-shadow: 0 0 12px #00d4ff, 0 0 25px #00d4ff;
+    overflow-y: auto;
+    padding-right: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .final-slide.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .final-slide::-webkit-scrollbar {
+    width: 6px;
+  }
+  .final-slide::-webkit-scrollbar-thumb {
+    background: #00d4ff;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div id="tech-bg"></div>
+<canvas id="neon-lines"></canvas>
+
+<div class="cv-box" id="cvBox">
+  <div class="lines-container" id="linesContainer">
+    <div class="line show">Loading CV...</div>
+  </div>
+</div>
+
+<script>
+  // Neon lines animation on canvas
+  const canvas = document.getElementById('neon-lines');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  const lines = [];
+  const linesCount = 30;
+
+  function randomRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function NeonLine() {
+    this.x = randomRange(0, width);
+    this.y = randomRange(0, height);
+    this.length = randomRange(40, 120);
+    this.speed = randomRange(0.3, 1);
+    this.alpha = randomRange(0.1, 0.4);
+    this.direction = Math.random() > 0.5 ? 1 : -1;
+  }
+  NeonLine.prototype.draw = function() {
+    ctx.strokeStyle = `rgba(0, 212, 255, ${this.alpha})`;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x, this.y + this.length * this.direction);
+    ctx.stroke();
+  }
+  NeonLine.prototype.update = function() {
+    this.y += this.speed * this.direction;
+    if (this.y > height + this.length) this.y = -this.length;
+    if (this.y < -this.length) this.y = height + this.length;
+    // Optional flicker effect
+    this.alpha += 0.01 * this.direction;
+    if(this.alpha > 0.4 || this.alpha < 0.1) this.direction *= -1;
+  }
+
+  function initLines() {
+    lines.length = 0;
+    for(let i = 0; i < linesCount; i++) {
+      lines.push(new NeonLine());
+    }
+  }
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    initLines();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    for(const line of lines) {
+      line.update();
+      line.draw();
+    }
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  animate();
+
+  // CV text logic (same as before)
+  const cvLines = [
+    "Sahil Nissar Khan",
+    "104A Wajhama, Qaziabad kralgund kup",
+    "+91-7780952526",
+    "sahilkhann1425@gmail.com",
+    "PROFESSIONAL SUMMARY",
+    "Motivated and detail-oriented Computer Science student with hands-on experience in full-stack web development, backend functionality, and UI/UX design.",
+    "Proficient in HTML, CSS, JavaScript, and PHP, with a strong foundation in responsive design and website optimization.",
+    "Quick learner with a growth mindset, eager to contribute to team success through clean code and creative problem-solving.",
+    "EDUCATION",
+    "Govt Boy’s Middle School (Sgr), 1st to 8th class (Mar 2011 - Dec 2017) - Completed middle school",
+    "Govt Boys Higher Sec School (Zadibal Sgr), 9th to 12th (Mar 2018 - Mar 2022)",
+    "Pursued 11th & 12th in PCM",
+    "Islamia College of Science and Commerce (Hawal Sgr), B.Sc Physics and BCA (Aug 2022 - Sept 2025)",
+    "PROJECTS",
+    "Portfolio Website: Developed a personal responsive portfolio site using HTML, CSS, and JavaScript. Integrated a PHP-based backend.",
+    "SKILLS",
+    "Programming Languages & Web Development: HTML, CSS, JavaScript, PHP",
+    "Full-Stack Web Development, Application Debugging & Design",
+    "Databases & Backend: MySQL, MongoDB, Basic Server-Side Scripting (PHP)",
+    "Database Management & Website Updating",
+    "TOOLS & FRAMEWORKS",
+    "Adobe Photoshop, Adobe Creative Suite, Paint",
+    "WordPress, GitHub, Microsoft Word, Tally",
+    "Wireframing & UI/UX Tools",
+    "PRACTICES",
+    "Software Testing & Best Practices",
+    "SEO (Search Engine Optimization), Content Marketing, Social Media Management",
+    "Website Analytics Tools",
+    "LANGUAGES",
+    "Urdu: Native",
+    "English: Conversational",
+    "Hindi: Basic"
+  ];
+
+  const maxVisibleLines = 6;
+  let currentIndex = 0;
+  const linesContainer = document.getElementById('linesContainer');
+  const cvBox = document.getElementById('cvBox');
+
+  function addNextLine() {
+    if (currentIndex >= cvLines.length) {
+      setTimeout(showFinalSlide, 1000);
+      return;
+    }
+
+    const newLine = document.createElement('div');
+    newLine.classList.add('line');
+    newLine.textContent = cvLines[currentIndex];
+    linesContainer.appendChild(newLine);
+
+    requestAnimationFrame(() => {
+      newLine.classList.add('show');
+    });
+
+    if (linesContainer.children.length > maxVisibleLines) {
+      const firstLine = linesContainer.children[0];
+      firstLine.classList.add('hide');
+
+      setTimeout(() => {
+        if (linesContainer.children.length > 0) {
+          linesContainer.removeChild(firstLine);
+        }
+      }, 200);
+    }
+
+    currentIndex++;
+    setTimeout(addNextLine, 600);
+  }
+
+  function showFinalSlide() {
+    linesContainer.remove();
+
+    const finalSlide = document.createElement('div');
+    finalSlide.classList.add('final-slide');
+
+    finalSlide.innerHTML = `
+      <h2 style="text-align:center; margin-bottom: 12px;">Sahil Nissar Khan - Full CV</h2>
+      <p><strong>Address:</strong> 104A Wajhama, Qaziabad kralgund kup</p>
+      <p><strong>Phone:</strong> +91-7780952526</p>
+      <p><strong>Email:</strong> sahilkhann1425@gmail.com</p>
+
+      <h3>PROFESSIONAL SUMMARY</h3>
+      <p>Motivated and detail-oriented Computer Science student with hands-on experience in full-stack web development, backend functionality, and UI/UX design. Proficient in HTML, CSS, JavaScript, and PHP, with a strong foundation in responsive design and website optimization. Quick learner with a growth mindset, eager to contribute to team success through clean code and creative problem-solving.</p>
+
+      <h3>EDUCATION</h3>
+      <ul>
+        <li>Govt Boy’s Middle School (Sgr), 1st to 8th class (Mar 2011 - Dec 2017) - Completed middle school</li>
+        <li>Govt Boys Higher Sec School (Zadibal Sgr), 9th to 12th (Mar 2018 - Mar 2022)</li>
+        <li>Pursued 11th & 12th in PCM</li>
+        <li>Islamia College of Science and Commerce (Hawal Sgr), B.Sc Physics and BCA (Aug 2022 - Sept 2025)</li>
+      </ul>
+
+      <h3>PROJECTS</h3>
+      <p>Portfolio Website: Developed a personal responsive portfolio site using HTML, CSS, and JavaScript. Integrated a PHP-based backend.</p>
+
+      <h3>SKILLS</h3>
+      <ul>
+        <li>Programming Languages & Web Development: HTML, CSS, JavaScript, PHP</li>
+        <li>Full-Stack Web Development, Application Debugging & Design</li>
+        <li>Databases & Backend: MySQL, MongoDB, Basic Server-Side Scripting (PHP)</li>
+        <li>Database Management & Website Updating</li>
+      </ul>
+
+      <h3>TOOLS & FRAMEWORKS</h3>
+      <ul>
+        <li>Adobe Photoshop, Adobe Creative Suite, Paint</li>
+        <li>WordPress, GitHub, Microsoft Word, Tally</li>
+        <li>Wireframing & UI/UX Tools</li>
+      </ul>
+
+      <h3>PRACTICES</h3>
+      <ul>
+        <li>Software Testing & Best Practices</li>
+        <li>SEO (Search Engine Optimization), Content Marketing, Social Media Management</li>
+        <li>Website Analytics Tools</li>
+      </ul>
+
+      <h3>LANGUAGES</h3>
+      <ul>
+        <li>Urdu: Native</li>
+        <li>English: Conversational</li>
+        <li>Hindi: Basic</li>
+      </ul>
+    `;
+
+    cvBox.appendChild(finalSlide);
+
+    requestAnimationFrame(() => {
+      finalSlide.classList.add('show');
+    });
+  }
+
+  window.onload = () => {
+    linesContainer.innerHTML = "";
+    addNextLine();
+  };
+</script>
+
+</body>
+</html>
